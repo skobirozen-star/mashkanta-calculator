@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>האם אני זכאי למשכנתא?</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#080c14;
+  --card:#0f1623;
+  --card2:#131d2e;
+  --border:rgba(255,255,255,0.07);
+  --gold:#e8b840;
+  --gold2:rgba(232,184,64,0.12);
+  --green:#3fcf8e;
+  --green2:rgba(63,207,142,0.12);
+  --red:#f05a5a;
+  --red2:rgba(240,90,90,0.12);
+  --blue:#5b9cf6;
+  --purple:#a78bfa;
+  --text:#eef0f4;
+  --muted:rgba(255,255,255,0.38);
+}
+body{
+  background:var(--bg);
+  font-family:'Heebo',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* ── SPLASH ── */
+#splash{
+  width:100%; min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px; text-align:center;
+  background:radial-gradient(ellipse 80% 60% at 50% 30%, rgba(232,184,64,0.07) 0%, transparent 70%);
+}
+.splash-icon{font-size:80px;margin-bottom:24px;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.splash-eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;}
+.splash-title{font-size:34px;font-weight:900;line-height:1.2;margin-bottom:14px;}
+.splash-title span{color:var(--gold);}
+.splash-sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:420px;margin:0 auto 36px;}
+.splash-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:36px;}
+.pill{background:rgba(255,255,255,0.06);border:1px solid var(--border);padding:8px 16px;border-radius:100px;font-size:12px;color:var(--muted);}
+.pill span{margin-left:6px;}
+.btn-start{
+  background:linear-gradient(135deg,#c8961a,#e8b840);
+  color:#111;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;
+  padding:16px 44px;border-radius:100px;border:none;cursor:pointer;
+  box-shadow:0 8px 32px rgba(232,184,64,0.3);transition:transform .2s,box-shadow .2s;
+  letter-spacing:.5px;
+}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(232,184,64,0.4);}
+
+/* ── GAME SHELL ── */
+#game{display:none;width:100%;max-width:580px;padding:0 0 80px;}
+
+/* ── TOP BAR ── */
+.topbar{
+  position:sticky;top:0;z-index:10;
+  background:rgba(8,12,20,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;display:flex;align-items:center;gap:14px;
+}
+.topbar-back{font-size:18px;cursor:pointer;color:var(--muted);transition:color .2s;background:none;border:none;color:var(--muted);}
+.topbar-back:hover{color:var(--text);}
+.topbar-info{flex:1;}
+.topbar-step{font-size:11px;color:var(--gold);letter-spacing:2px;margin-bottom:4px;}
+.topbar-title{font-size:14px;font-weight:700;}
+.progress-ring-wrap{position:relative;width:42px;height:42px;flex-shrink:0;}
+.progress-ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:rgba(255,255,255,0.07);stroke-width:3;}
+.ring-fill{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .6s ease;}
+.ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);}
+
+/* ── STEP CARD ── */
+.step-card{
+  margin:20px 16px 0;
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;
+}
+.step-hero{
+  padding:28px 24px 20px;
+  background:linear-gradient(160deg,rgba(232,184,64,0.05) 0%,transparent 60%);
+}
+.step-num{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:10px;}
+.step-icon{font-size:48px;margin-bottom:14px;}
+.step-q{font-size:20px;font-weight:900;line-height:1.3;margin-bottom:8px;}
+.step-hint{font-size:13px;color:var(--muted);line-height:1.65;}
+.step-body{padding:20px 24px;}
+
+/* ── INPUT STYLES ── */
+.input-row{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.input-label{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.5px;}
+.input-wrap{position:relative;display:flex;align-items:center;}
+.input-currency{
+  position:absolute;right:14px;font-size:14px;color:var(--gold);font-weight:700;pointer-events:none;
+}
+.inp{
+  width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;padding:13px 40px 13px 14px;
+  font-family:'Heebo',sans-serif;font-size:16px;color:var(--text);
+  outline:none;transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.inp:focus{border-color:var(--gold);}
+.inp::placeholder{color:rgba(255,255,255,0.18);}
+.inp-hint{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* slider */
+.slider-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.slider-top{display:flex;justify-content:space-between;align-items:center;}
+.slider-label{font-size:12px;color:var(--muted);font-weight:700;}
+.slider-val{font-size:15px;font-weight:900;color:var(--gold);}
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.1);outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 10px rgba(232,184,64,0.4);cursor:pointer;
+}
+
+/* expense rows */
+.expense-row{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:12px;padding:12px 14px;margin-bottom:10px;
+}
+.expense-icon{font-size:22px;flex-shrink:0;}
+.expense-info{flex:1;}
+.expense-name{font-size:13px;font-weight:700;margin-bottom:2px;}
+.expense-sub{font-size:11px;color:var(--muted);}
+.expense-inp{
+  width:110px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px;padding:8px 10px;
+  font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;color:var(--text);
+  outline:none;text-align:center;transition:border-color .2s;
+}
+.expense-inp:focus{border-color:var(--gold);}
+
+/* btn next */
+.btn-next{
+  width:calc(100% - 32px);margin:16px;
+  background:linear-gradient(135deg,#c8961a,#e8b840);
+  color:#111;font-family:'Heebo',sans-serif;font-size:15px;font-weight:900;
+  padding:16px;border-radius:14px;border:none;cursor:pointer;
+  box-shadow:0 6px 24px rgba(232,184,64,0.25);transition:transform .2s,box-shadow .2s;
+}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(232,184,64,0.35);}
+.btn-next:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+
+/* ── LIVE METER ── */
+.meter-wrap{
+  margin:16px;background:var(--card2);border:1px solid var(--border);
+  border-radius:16px;padding:18px;
+}
+.meter-title{font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px;}
+.meter-bar-wrap{height:10px;background:rgba(255,255,255,0.07);border-radius:5px;overflow:hidden;margin-bottom:8px;}
+.meter-bar{height:100%;border-radius:5px;transition:width .7s ease,background .5s;}
+.meter-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);}
+
+/* ── RESULT ── */
+#result{display:none;margin:20px 16px 0;}
+#result.show{display:block;animation:fadeUp .5s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.result-hero{
+  border-radius:20px;padding:30px 24px;text-align:center;margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.result-hero.green{background:linear-gradient(150deg,#071f14,#0d3022,#0a2018);}
+.result-hero.yellow{background:linear-gradient(150deg,#1a1200,#2e2000,#3a2800);}
+.result-hero.red{background:linear-gradient(150deg,#1a0505,#2e0a0a,#3a0c0c);}
+.result-glow{
+  position:absolute;width:300px;height:300px;border-radius:50%;
+  top:-100px;right:-100px;opacity:.08;pointer-events:none;
+}
+.result-hero.green .result-glow{background:var(--green);}
+.result-hero.yellow .result-glow{background:var(--gold);}
+.result-hero.red .result-glow{background:var(--red);}
+.result-emoji{font-size:64px;margin-bottom:16px;}
+.result-verdict{font-size:24px;font-weight:900;margin-bottom:10px;line-height:1.3;}
+.result-hero.green .result-verdict{color:var(--green);}
+.result-hero.yellow .result-verdict{color:var(--gold);}
+.result-hero.red .result-verdict{color:var(--red);}
+.result-summary{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.75;}
+
+/* numbers grid */
+.nums-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.num-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:16px;
+}
+.num-label{font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:.5px;}
+.num-value{font-size:20px;font-weight:900;}
+.num-value.green{color:var(--green);}
+.num-value.red{color:var(--red);}
+.num-value.gold{color:var(--gold);}
+.num-value.blue{color:var(--blue);}
+.num-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* ratio meter */
+.ratio-section{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px;margin-bottom:16px;
+}
+.ratio-title{font-size:13px;font-weight:700;margin-bottom:14px;}
+.ratio-bar-outer{height:24px;background:rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;position:relative;margin-bottom:8px;}
+.ratio-bar-inner{height:100%;border-radius:12px;transition:width 1s ease;display:flex;align-items:center;justify-content:flex-end;padding-left:10px;}
+.ratio-bar-label{font-size:12px;font-weight:700;color:#111;padding-left:10px;}
+.ratio-legend{display:flex;gap:16px;font-size:11px;color:var(--muted);}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:6px;}
+
+/* steps list */
+.steps-section{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px;margin-bottom:16px;
+}
+.steps-title{font-size:13px;font-weight:700;margin-bottom:14px;}
+.step-item{
+  display:flex;gap:14px;margin-bottom:16px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.step-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.step-badge{
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;flex-shrink:0;margin-top:1px;
+}
+.badge-green{background:var(--green2);color:var(--green);}
+.badge-gold{background:var(--gold2);color:var(--gold);}
+.badge-red{background:var(--red2);color:var(--red);}
+.badge-blue{background:rgba(91,156,246,0.12);color:var(--blue);}
+.step-content{}
+.step-item-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.step-item-body{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.65;}
+
+/* cta */
+.cta-card{
+  background:linear-gradient(135deg,rgba(232,184,64,0.1),rgba(232,184,64,0.04));
+  border:1px solid rgba(232,184,64,0.22);
+  border-radius:18px;padding:24px;text-align:center;margin-bottom:16px;
+}
+.cta-emoji{font-size:36px;margin-bottom:12px;}
+.cta-h{font-size:18px;font-weight:900;margin-bottom:8px;}
+.cta-p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.cta-btn{
+  background:linear-gradient(135deg,#c8961a,#e8b840);
+  color:#111;font-family:'Heebo',sans-serif;font-size:14px;font-weight:900;
+  padding:14px 32px;border-radius:100px;border:none;cursor:pointer;
+  box-shadow:0 6px 20px rgba(232,184,64,0.25);transition:transform .2s;
+  display:block;width:100%;margin-bottom:10px;
+}
+.cta-btn:hover{transform:scale(1.02);}
+.restart-btn{
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted);font-family:'Heebo',sans-serif;font-size:13px;
+  padding:12px;border-radius:100px;cursor:pointer;transition:all .2s;width:100%;
+}
+.restart-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
+
+/* utility */
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SPLASH ═══════════════ -->
+<div id="splash">
+  <div class="splash-icon">🏠</div>
+  <div class="splash-eyebrow">כלי חינמי ואינטראקטיבי</div>
+  <div class="splash-title">האם אני זכאי<br>ל<span>משכנתא?</span></div>
+  <div class="splash-sub">ענה על 4 שאלות פשוטות וגלה בדיוק איפה אתה עומד — עם מספרים אמיתיים וצעדים ברורים.</div>
+  <div class="splash-pills">
+    <div class="pill"><span>⏱</span>2 דקות בלבד</div>
+    <div class="pill"><span>🔒</span>ללא שמירת מידע</div>
+    <div class="pill"><span>💡</span>תשובות אמיתיות</div>
+  </div>
+  <button class="btn-start" onclick="startGame()">▶ בואו נתחיל</button>
+</div>
+
+<!-- ═══════════════ GAME ═══════════════ -->
+<div id="game">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <button class="topbar-back" onclick="backStep()">→</button>
+    <div class="topbar-info">
+      <div class="topbar-step" id="topStep">שלב 1 מתוך 4</div>
+      <div class="topbar-title" id="topTitle">פרטי הדירה</div>
+    </div>
+    <div class="progress-ring-wrap">
+      <svg width="42" height="42" viewBox="0 0 42 42">
+        <circle class="ring-bg" cx="21" cy="21" r="17"/>
+        <circle class="ring-fill" id="ringFill" cx="21" cy="21" r="17"
+          stroke-dasharray="107"
+          stroke-dashoffset="107"/>
+      </svg>
+      <div class="ring-label" id="ringLabel">0%</div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div id="stepArea"></div>
+
+  <!-- Live meter -->
+  <div class="meter-wrap" id="meterWrap">
+    <div class="meter-title">מד הכדאיות — מתעדכן בזמן אמת</div>
+    <div class="meter-bar-wrap">
+      <div class="meter-bar" id="meterBar" style="width:0%;background:var(--red)"></div>
+    </div>
+    <div class="meter-labels"><span>סיכון גבוה</span><span>גבולי</span><span>אידיאלי</span></div>
+  </div>
+
+  <!-- Result -->
+  <div id="result"></div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+let S = {
+  step: 0,
+  apt: 0,        // apartment price
+  equity: 0,     // own capital
+  income: 0,     // net monthly income
+  expenses: {},  // { label, amount }[]
+};
+
+const STEPS = ['פרטי הדירה','ההון העצמי','ההכנסות','ההוצאות'];
+
+// ════════════════════════════════════════
+//  STEP DEFINITIONS
+// ════════════════════════════════════════
+function getSteps(){return[
+  // Step 0 — apartment
+  {
+    num:'שלב 1 מתוך 4', icon:'🏢', title:'כמה עולה הדירה שאתם מחפשים?',
+    hint:'הכניסו את מחיר הדירה הרצויה — ניתן להיות גמישים, זה סימולציה',
+    render:()=>`
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <span class="slider-label">מחיר הדירה</span>
+          <span class="slider-val" id="aptVal">1,500,000 ₪</span>
+        </div>
+        <input type="range" id="aptSlider" min="500000" max="5000000" step="50000" value="${S.apt||1500000}"
+          oninput="S.apt=+this.value;document.getElementById('aptVal').textContent=fmt(S.apt)+' ₪';updateMeter()">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;">
+          <span>500K</span><span>1.5M</span><span>3M</span><span>5M</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-label">או הכניסו בדיוק</div>
+        <div class="input-wrap">
+          <input class="inp" id="aptExact" type="number" placeholder="1500000"
+            value="${S.apt||''}"
+            oninput="S.apt=+this.value||0;document.getElementById('aptSlider').value=Math.min(5000000,S.apt);document.getElementById('aptVal').textContent=fmt(S.apt)+' ₪';updateMeter()">
+          <span class="input-currency">₪</span>
+        </div>
+      </div>
+    `,
+    validate:()=>S.apt>=300000,
+    errMsg:'אנא הכניסו מחיר דירה מעל 300,000 ₪',
+  },
+  // Step 1 — equity
+  {
+    num:'שלב 2 מתוך 4', icon:'💰', title:'כמה הון עצמי יש לכם?',
+    hint:'הון עצמי = חסכונות + עזרת משפחה + מכירת נכס. הבנקים דורשים מינימום 25% משווי הדירה.',
+    render:()=>{
+      const min25 = Math.round(S.apt*0.25);
+      const def = S.equity || min25;
+      return`
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <span class="slider-label">הון עצמי</span>
+          <span class="slider-val" id="eqVal">${fmt(def)} ₪</span>
+        </div>
+        <input type="range" id="eqSlider" min="0" max="${Math.round(S.apt*0.9)}" step="10000" value="${def}"
+          oninput="S.equity=+this.value;document.getElementById('eqVal').textContent=fmt(S.equity)+' ₪';refreshEquityInfo();updateMeter()">
+      </div>
+      <div class="input-row">
+        <div class="input-label">או הכניסו בדיוק</div>
+        <div class="input-wrap">
+          <input class="inp" id="eqExact" type="number" placeholder="${min25}"
+            value="${def||''}"
+            oninput="S.equity=+this.value||0;document.getElementById('eqSlider').value=Math.min(S.apt*0.9,S.equity);document.getElementById('eqVal').textContent=fmt(S.equity)+' ₪';refreshEquityInfo();updateMeter()">
+          <span class="input-currency">₪</span>
+        </div>
+      </div>
+      <div id="equityInfo" style="margin-top:4px;"></div>
+    `},
+    validate:()=>S.equity>0,
+    errMsg:'אנא הכניסו הון עצמי',
+    onRender:()=>{ S.equity=S.equity||Math.round(S.apt*0.25); refreshEquityInfo(); updateMeter(); }
+  },
+  // Step 2 — income
+  {
+    num:'שלב 3 מתוך 4', icon:'💼', title:'מה ההכנסה החודשית נטו של משק הבית?',
+    hint:'סכמו את כל ההכנסות: משכורות, שכר דירה שמקבלים, קצבאות וכו\'',
+    render:()=>`
+      <div class="input-row">
+        <div class="input-label">הכנסה חודשית נטו</div>
+        <div class="input-wrap">
+          <input class="inp" id="incomeInp" type="number" placeholder="20000"
+            value="${S.income||''}"
+            oninput="S.income=+this.value||0;updateMeter()" style="font-size:20px;font-weight:900;">
+          <span class="input-currency">₪</span>
+        </div>
+        <div class="inp-hint">לדוגמה: שני בני זוג עם 10,000 ₪ כל אחד = 20,000 ₪</div>
+      </div>
+      <div style="margin-top:8px;background:rgba(91,156,246,0.08);border:1px solid rgba(91,156,246,0.15);border-radius:12px;padding:14px;">
+        <div style="font-size:12px;color:var(--blue);font-weight:700;margin-bottom:4px;">💡 כיצד הבנק מחשב זכאות?</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">הבנק מאשר משכנתא רק אם ההחזר החודשי <strong style="color:var(--text)">לא עולה על 40%</strong> מההכנסה נטו.
+        <br>הכנסה של 20,000 ₪ → מקסימום 8,000 ₪/חודש.</div>
+      </div>
+    `,
+    validate:()=>S.income>=3000,
+    errMsg:'אנא הכניסו הכנסה חודשית מעל 3,000 ₪',
+  },
+  // Step 3 — expenses
+  {
+    num:'שלב 4 מתוך 4', icon:'🧾', title:'מה ההוצאות החודשיות שלכם?',
+    hint:'הכניסו הוצאות קבועות. השכירות תוחלף בהחזר המשכנתא לאחר הרכישה.',
+    render:()=>{
+      const exps = [
+        {id:'childcare', icon:'👶', name:'גנים / שכ"ל ילדים',    sub:'סה"כ לחודש',       default:S.expenses.childcare||0},
+        {id:'car',       icon:'🚗', name:'הלוואת רכב / ליסינג',  sub:'החזר חודשי',       default:S.expenses.car||0},
+        {id:'credit',    icon:'💳', name:'הלוואות / כרטיסי אשראי',sub:'החזרים חודשיים', default:S.expenses.credit||0},
+        {id:'rent',      icon:'🏠', name:'שכירות נוכחית',         sub:'תוחלף במשכנתא',   default:S.expenses.rent||0},
+        {id:'other',     icon:'📦', name:'הוצאות קבועות אחרות',  sub:'מנויים, ביטוחים', default:S.expenses.other||0},
+      ];
+      return exps.map(e=>`
+        <div class="expense-row">
+          <div class="expense-icon">${e.icon}</div>
+          <div class="expense-info">
+            <div class="expense-name">${e.name}</div>
+            <div class="expense-sub">${e.sub}</div>
+          </div>
+          <input class="expense-inp" id="exp_${e.id}" type="number" placeholder="0" value="${e.default||''}"
+            oninput="S.expenses['${e.id}']=+this.value||0;updateMeter()">
+        </div>
+      `).join('');
+    },
+    validate:()=>true,
+  },
+];}
+
+// ════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════
+function render(){
+  const steps=getSteps();
+  const st=steps[S.step];
+
+  // topbar
+  document.getElementById('topStep').textContent=st.num;
+  document.getElementById('topTitle').textContent=STEPS[S.step];
+
+  // progress ring
+  const pct=Math.round(((S.step+1)/steps.length)*100);
+  const circ=107;
+  document.getElementById('ringFill').style.strokeDashoffset=circ-(circ*pct/100);
+  document.getElementById('ringLabel').textContent=pct+'%';
+
+  // step card
+  document.getElementById('stepArea').innerHTML=`
+    <div class="step-card">
+      <div class="step-hero">
+        <div class="step-num">${st.num}</div>
+        <div class="step-icon">${st.icon}</div>
+        <div class="step-q">${st.title}</div>
+        <div class="step-hint">${st.hint}</div>
+      </div>
+      <div class="step-body">${st.render()}</div>
+      <button class="btn-next" id="btnNext" onclick="nextStep()">
+        ${S.step<steps.length-1?'המשך ←':'חשבו לי את המשכנתא 🏠'}
+      </button>
+    </div>
+  `;
+
+  if(st.onRender) setTimeout(st.onRender,50);
+  document.getElementById('result').className='hidden';
+  document.getElementById('meterWrap').style.display='block';
+  updateMeter();
+}
+
+function refreshEquityInfo(){
+  const el=document.getElementById('equityInfo');
+  if(!el) return;
+  if(!S.apt||!S.equity){ el.innerHTML=''; return; }
+  const pct=Math.round((S.equity/S.apt)*100);
+  const loan=S.apt-S.equity;
+  const ok=pct>=25;
+  const color=ok?'var(--green)':'var(--red)';
+  const icon=ok?'✅':'⚠️';
+  el.innerHTML=`
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-top:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:12px;color:var(--muted);">אחוז הון עצמי</span>
+        <span style="font-size:15px;font-weight:900;color:${color}">${icon} ${pct}%</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--muted);">גובה ההלוואה</span>
+        <span style="font-size:15px;font-weight:900;color:var(--blue)">${fmt(loan)} ₪</span>
+      </div>
+      ${pct<25?`<div style="margin-top:10px;font-size:12px;color:var(--red);line-height:1.6;">⚠️ הבנקים דורשים מינימום 25% הון עצמי. עוד ${fmt(Math.round(S.apt*0.25)-S.equity)} ₪ נדרשים.</div>`:''}
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════
+function startGame(){
+  document.getElementById('splash').style.display='none';
+  document.getElementById('game').style.display='block';
+  S.step=0;
+  render();
+}
+
+function nextStep(){
+  const steps=getSteps();
+  const st=steps[S.step];
+  if(!st.validate()){
+    alert(st.errMsg||'אנא מלאו את כל השדות');
+    return;
+  }
+  if(S.step<steps.length-1){
+    S.step++;
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    showResult();
+  }
+}
+
+function backStep(){
+  if(S.step>0){ S.step--; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else{ document.getElementById('game').style.display='none'; document.getElementById('splash').style.display='flex'; }
+}
+
+// ════════════════════════════════════════
+//  LIVE METER
+// ════════════════════════════════════════
+function updateMeter(){
+  const {apt,equity,income}=S;
+  if(!apt||!income){ setMeter(5,'var(--red)'); return; }
+  const loan=apt-equity;
+  const monthly=calcMonthly(loan,25,3.5);
+  const ratio=monthly/income;
+  const pct=Math.max(0,Math.min(100,Math.round((1-ratio/0.5)*100)));
+  const color=ratio<0.33?'var(--green)':ratio<0.4?'var(--gold)':'var(--red)';
+  setMeter(pct,color);
+}
+function setMeter(pct,color){
+  const b=document.getElementById('meterBar');
+  if(b){ b.style.width=pct+'%'; b.style.background=color; }
+}
+
+// ════════════════════════════════════════
+//  CALC HELPERS
+// ════════════════════════════════════════
+function calcMonthly(principal,years,rate){
+  const r=rate/100/12, n=years*12;
+  if(r===0) return principal/n;
+  return Math.round(principal*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1));
+}
+function fmt(n){ if(!n||isNaN(n)) return '0'; return Math.round(n).toLocaleString('he-IL'); }
+function totalExp(){
+  const e=S.expenses;
+  return (e.childcare||0)+(e.car||0)+(e.credit||0)+(e.other||0);
+  // rent excluded — replaced by mortgage
+}
+
+// ════════════════════════════════════════
+//  RESULT
+// ════════════════════════════════════════
+function showResult(){
+  document.getElementById('meterWrap').style.display='none';
+  document.getElementById('stepArea').style.display='none';
+
+  // Ring → 100%
+  document.getElementById('ringFill').style.strokeDashoffset='0';
+  document.getElementById('ringLabel').textContent='✓';
+  document.getElementById('topStep').textContent='תוצאות';
+  document.getElementById('topTitle').textContent='ניתוח המשכנתא שלך';
+
+  const loan       = S.apt - S.equity;
+  const equityPct  = Math.round((S.equity/S.apt)*100);
+  const monthly    = calcMonthly(loan, 25, 3.5);
+  const incomeRatio= monthly/S.income;
+  const freeIncome = S.income - monthly - totalExp();
+  const maxLoan    = Math.round(S.income*0.4*((Math.pow(1+3.5/100/12,300)-1)/((3.5/100/12)*Math.pow(1+3.5/100/12,300))));
+  const totalPaid  = monthly*300;
+  const totalInt   = totalPaid - loan;
+
+  // verdict
+  const eq_ok   = equityPct >= 25;
+  const ratio_ok = incomeRatio <= 0.40;
+  const ratio_great = incomeRatio <= 0.33;
+  const free_ok  = freeIncome >= 4000;
+
+  let verdict, heroClass, emoji, summary, stepsHTML;
+
+  if(eq_ok && ratio_great && free_ok){
+    verdict='✅ אתם בתנאים מצוינים למשכנתא!';
+    heroClass='green'; emoji='🏆';
+    summary=`הון עצמי מספיק, יחס החזר נמוך ותזרים פנוי טוב. הבנקים יתחרו על הלקוח הזה.`;
+    stepsHTML = buildSteps([
+      {b:'badge-green',i:'1',t:'קבלו ייעוץ לבניית תמהיל אופטימלי',d:`עם יחס החזר של ${Math.round(incomeRatio*100)}% יש לכם גמישות לבחור מסלולים שיחסכו עוד עשרות אלפי ₪.`},
+      {b:'badge-gold',i:'2',t:'השוו הצעות מ-3 בנקים לפחות',d:`הפרש ריבית של 0.3% על הלוואה של ${fmt(loan)} ₪ שווה ${fmt(Math.round(loan*0.003*25/2))} ₪ לאורך חיי ההלוואה.`},
+      {b:'badge-blue',i:'3',t:'בדקו סובסידיות ממשלתיות',d:'זוגות צעירים, דירה ראשונה, קבוצות זכאות — בדקו אם מגיע לכם פטור ממס רכישה.'},
+      {b:'badge-green',i:'4',t:'הגישו בקשה לאישור עקרוני',d:'אישור עקרוני תקף 3 חודשים ומחזק את עמדת המיקוח מול המוכרים.'},
+    ]);
+  } else if(eq_ok && ratio_ok){
+    verdict='🟡 אפשרי — אך גבולי. יש מה לשפר.';
+    heroClass='yellow'; emoji='⚠️';
+    summary=`ההכנסה מאפשרת את ההחזר, אך יחס של ${Math.round(incomeRatio*100)}% קרוב לגבול. עם תכנון נכון — ניתן לשפר משמעותית.`;
+    stepsHTML = buildSteps([
+      {b:'badge-gold',i:'!',t:`יחס ההחזר שלכם: ${Math.round(incomeRatio*100)}%`,d:`הבנק יאשר עד 40%. אתם ב-${Math.round(incomeRatio*100)}% — קרוב. שיפור ההכנסה ב-${fmt(Math.round(S.income*(incomeRatio-0.33)))} ₪ יוריד אתכם לאזור הטוב.`},
+      {b:'badge-blue',i:'2',t:'שקלו להאריך את תקופת ההלוואה',d:`הארכה מ-25 ל-30 שנה תוריד ההחזר ל-${fmt(calcMonthly(loan,30,3.5))} ₪ — נמוך ב-${fmt(monthly-calcMonthly(loan,30,3.5))} ₪. שימו לב: תשלמו ריבית נוספת.`},
+      {b:'badge-gold',i:'3',t:'הגדילו הון עצמי אם אפשרי',d:`כל ${fmt(100000)} ₪ נוספים = החזר נמוך ב-${fmt(calcMonthly(100000,25,3.5))} ₪/חודש.`},
+      {b:'badge-green',i:'4',t:'ייעוץ מקצועי — חובה במקרה שלכם',d:'כשהמצב גבולי, תמהיל נכון יכול להכריע בין אישור לדחייה ולחסוך עשרות אלפי ₪.'},
+    ]);
+  } else if(!eq_ok){
+    verdict='🔴 הון עצמי לא מספיק';
+    heroClass='red'; emoji='💸';
+    summary=`יש לכם ${equityPct}% הון עצמי. הבנקים דורשים לפחות 25%. חסרים עוד ${fmt(Math.round(S.apt*0.25-S.equity))} ₪.`;
+    stepsHTML = buildSteps([
+      {b:'badge-red',i:'!',t:`חסרים ${fmt(Math.round(S.apt*0.25-S.equity))} ₪`,d:`לדירה של ${fmt(S.apt)} ₪ נדרש הון עצמי מינימלי של ${fmt(Math.round(S.apt*0.25))} ₪ (25%).`},
+      {b:'badge-gold',i:'2',t:'שקלו דירה קטנה יותר',d:`עם ${fmt(S.equity)} ₪ הון עצמי תוכלו לרכוש דירה עד ${fmt(Math.round(S.equity/0.25))} ₪.`},
+      {b:'badge-blue',i:'3',t:'בדקו תוכנית חסכון ממוקדת',d:'חיסכון של 5,000 ₪/חודש × 24 חודשים = 120,000 ₪ נוספים. אפשרי!'},
+      {b:'badge-green',i:'4',t:'בדקו עזרה משפחתית / מתנה',d:'עזרת הורים מוכרת כהון עצמי בבנקים. בתנאים מסוימים גם הלוואה מהמשפחה.'},
+    ]);
+  } else {
+    verdict='🔴 ההחזר גבוה מדי ביחס להכנסה';
+    heroClass='red'; emoji='😬';
+    summary=`ההחזר של ${fmt(monthly)} ₪ הוא ${Math.round(incomeRatio*100)}% מהכנסתכם. הבנק יסרב. הכנסה של ${fmt(Math.round(monthly/0.4))} ₪ נדרשת.`;
+    stepsHTML = buildSteps([
+      {b:'badge-red',i:'!',t:`ההחזר החודשי: ${fmt(monthly)} ₪`,d:`יחס של ${Math.round(incomeRatio*100)}% מהכנסה. הבנק יאשר עד 40% = ${fmt(Math.round(S.income*0.4))} ₪.`},
+      {b:'badge-gold',i:'2',t:'הקטינו את גובה ההלוואה',d:`עם הכנסה של ${fmt(S.income)} ₪ תוכלו לקבל הלוואה של עד ${fmt(maxLoan)} ₪.`},
+      {b:'badge-blue',i:'3',t:'שקלו דירה זולה יותר',d:`דירה של ${fmt(Math.round(maxLoan+S.equity))} ₪ עם ההון הקיים תאושר בסבירות גבוהה.`},
+      {b:'badge-green',i:'4',t:'שפרו הכנסה לפני הגשה',d:`עלייה בהכנסה ב-${fmt(Math.round(monthly/0.4-S.income))} ₪ תהפוך את הבקשה לאפשרית. ייעוץ לפני הגשה — קריטי.`},
+    ]);
+  }
+
+  // Ratio bar
+  const ratioW=Math.min(100,Math.round(incomeRatio*100/0.5*100));
+  const ratioColor=incomeRatio<=0.33?'var(--green)':incomeRatio<=0.4?'var(--gold)':'var(--red)';
+
+  const html=`
+    <div class="result-hero ${heroClass}">
+      <div class="result-glow"></div>
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-verdict">${verdict}</div>
+      <div class="result-summary">${summary}</div>
+    </div>
+
+    <div class="nums-grid">
+      <div class="num-card">
+        <div class="num-label">גובה ההלוואה</div>
+        <div class="num-value blue">${fmt(loan)} ₪</div>
+        <div class="num-sub">${equityPct}% הון עצמי</div>
+      </div>
+      <div class="num-card">
+        <div class="num-label">החזר חודשי משוער</div>
+        <div class="num-value ${incomeRatio<=0.33?'green':incomeRatio<=0.4?'gold':'red'}">${fmt(monthly)} ₪</div>
+        <div class="num-sub">25 שנה | 3.5% ריבית</div>
+      </div>
+      <div class="num-card">
+        <div class="num-label">פנוי בחודש לאחר הכל</div>
+        <div class="num-value ${freeIncome>=5000?'green':freeIncome>=2500?'gold':'red'}">${fmt(freeIncome)} ₪</div>
+        <div class="num-sub">לאחר משכנתא + הוצאות</div>
+      </div>
+      <div class="num-card">
+        <div class="num-label">סה"כ ריבית ל-25 שנה</div>
+        <div class="num-value red">${fmt(totalInt)} ₪</div>
+        <div class="num-sub">שווה לחשוב על קיצור תקופה</div>
+      </div>
+    </div>
+
+    <div class="ratio-section">
+      <div class="ratio-title">יחס החזר מול הכנסה (בנק מאשר עד 40%)</div>
+      <div class="ratio-bar-outer">
+        <div class="ratio-bar-inner" id="ratioBarInner" style="width:0%;background:${ratioColor}">
+          <span class="ratio-bar-label">${Math.round(incomeRatio*100)}%</span>
+        </div>
+      </div>
+      <div class="ratio-legend">
+        <span><span class="legend-dot" style="background:var(--green)"></span>אידיאלי (עד 33%)</span>
+        <span><span class="legend-dot" style="background:var(--gold)"></span>גבולי (33–40%)</span>
+        <span><span class="legend-dot" style="background:var(--red)"></span>חריגה (מעל 40%)</span>
+      </div>
+    </div>
+
+    <div class="steps-section">
+      <div class="steps-title">🗺️ הצעדים הבאים שלכם</div>
+      ${stepsHTML}
+    </div>
+
+    <div class="cta-card">
+      <div class="cta-emoji">🤝</div>
+      <div class="cta-h">רוצים לדייק את המספרים?</div>
+      <div class="cta-p">זו סימולציה — המצב האמיתי שלכם תלוי בהיסטוריית האשראי, מסלולי הריבית הקיימים ועוד גורמים. שיחה של 20 דקות תיתן תמונה מדויקת.</div>
+      <button class="cta-btn" onclick="alert('📱 יעקב רוזן | 054-7801610\\nשלחו הודעה ואחזור אליכם בהקדם!')">📲 דברו עם יעקב — ייעוץ ראשון חינם</button>
+      <button class="restart-btn" onclick="restartGame()">🔄 נסו תרחיש אחר</button>
+    </div>
+  `;
+
+  const rd=document.getElementById('result');
+  rd.innerHTML=html;
+  rd.className='show';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // animate ratio bar
+  setTimeout(()=>{
+    const rb=document.getElementById('ratioBarInner');
+    if(rb) rb.style.width=Math.min(100,Math.round(incomeRatio*250))+'%';
+  },400);
+}
+
+function buildSteps(items){
+  return items.map(it=>`
+    <div class="step-item">
+      <div class="step-badge ${it.b}">${it.i}</div>
+      <div class="step-content">
+        <div class="step-item-title">${it.t}</div>
+        <div class="step-item-body">${it.d}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function restartGame(){
+  S={step:0,apt:0,equity:0,income:0,expenses:{}};
+  document.getElementById('result').className='hidden';
+  document.getElementById('stepArea').style.display='block';
+  document.getElementById('meterWrap').style.display='block';
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
